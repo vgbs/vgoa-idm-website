@@ -1,3 +1,9 @@
+# Customer Identity Management Help
+
+## Announcements
+
+* [Changes in logout needed](announcement-20220503.md)
+
 ## Welcome to GitHub Pages
 
 You can use the [editor on GitHub](https://github.com/vgbs/vgoa-idm-website/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
