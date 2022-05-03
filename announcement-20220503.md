@@ -1,4 +1,8 @@
-## SSO Announcement 03.05.2022 - OpenID Connect Logout
+---
+title: Identity Management Help - SSO Announcement 03.05.2022
+---
+
+## OpenID Connect Logout
 
 Previous versions of Keycloak had supported automatic logout of the user and redirecting to the application by opening logout endpoint URL such as
 
