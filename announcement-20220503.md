@@ -1,5 +1,6 @@
 ---
-title: Identity Management Help - SSO Announcement 03.05.2022
+title: Identity Management Help
+description: SSO Announcement 03.05.2022
 ---
 
 ## OpenID Connect Logout
