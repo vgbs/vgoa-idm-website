@@ -5,61 +5,132 @@ description: Developer Documentation
 
 [&larr; back to Overview](/)
 
-## SSO Adapters
-
-We are using a standard OAuth2 SSO implementation. Adapters are available for most programming languages and technology stacks. There is not one generally valid documentation for all. As we are supporting teams to implement, we will add more and more links to available documentations:
-
-* Java Spring: Link
-
-## Userinfo API
-
-You can use the userinfo resource to get relevant data from the user to start off.
-
-```
-qa base-server-url: https://idm-qa.vaillant-group.com
-production base-server-url: https://idm.vaillant-group.com
-```
-
-### Request GET /userinfo
-
-Retrieves the consented UserInfo and other claims about the logged-in subject (end-user).
-
-#### Parameters
-
-* `Authorization`: The access token received after login.
-
-### Response 200
-
-```
-{
-    "companyName": "string",
-    "salesforceAccountId": "string",
-    "customerNumber": "string",
-    "companyAddress": "string",
-    "companyPhone": "string",
-    "companyMobile": "string",
-    "companyFax": "string",
-    "companyEmail": "string",
-    "companyWebsite": "string",
-    "salesforceLoyaltyId": "string",
-    "name": "string",
-    "salesforceContactId": "string",
-    "email": "string",
-}
-```
-
 ## How To Start
 
 What we need from you to set everything up:
 
-* Frontend or backend authentification method
-* Realm
+* Are you using authentication in a frontend, a backend or both?
+* Which Realms do you need access to:
     * Brand
     * Country
     * Environment (development / QA / production)
 * List of your redirect URIs separated by realm
+* What tech stack are you using
 
 What you will get from us:
 
-* Your SSO base URL
+Basically all information that is needed in the oauth configuration of your tech stack. Namely:
+
+* The SSO base URLs
 * Your client credentials
+
+## SSO Adapters
+
+We are using a standard OAuth2 SSO implementation. Adapters are available for
+most programming languages and technology stacks. There is not one generally
+valid documentation for all. Generally, a good starting point is the offical
+Keycloak Integration documentation which provides tutorials for different tech
+stacks:
+
+[Keycloak Securing Applications and Services Guide](https://www.keycloak.org/docs/latest/securing_apps/)
+
+As we are supporting teams to implement, we will add more and more links to
+available documentations:
+
+* Java, Spring Boot: [Official Docs](https://spring.io/guides/tutorials/spring-boot-oauth2/)
+
+## Available Information in the Token and the Userinfo
+
+The JWT Tokens you get from the SSO contains several Vaillant-specific pieces
+of information about the user. The following information are provided
+automatically in each JWT:
+
+```js
+{
+  "exp": int, // Expiration of this token (unix timestamp)
+  "iat": int, // Issued at (unix timestamp)
+  "auth_time": int, // time of authentication
+  "jti": UUID, // Unique ID of this token
+  "iss": String, // Issuer (URL of the originating REALM)
+  "sub": String // Internal USER id
+  // a few keycloak internals are skipped here
+  "realm_access": {
+    "roles": [
+      // all roles the user is a member of
+      "Kompetenzpartner Programm 2019-2020",
+      "HeizungOnline"
+      // ...
+    ]
+  },
+  // The following information are Vaillant specific
+  // They are added to each token if the corresponding information
+  // can be found in Salesforce. If not, the key will not be added
+  // to the token.
+  "salesforceContactId": "6301",
+  "country": "DE",
+  "brandName": "vaillant",
+  "email_verified": true,
+  "companyName": "First-Last GmbH",
+  "preferred_username": "user@example.org",
+  "locale": "de",
+  "given_name": "First",
+  "name": "First Last",
+  "family_name": "Last",
+  "email": "user@example.org",
+  "salesforceAccountId": "1234",
+  "salesforceBrandDetailContactId": "7981"
+}
+```
+
+Additionally, the SSO provides a openid-connect userinfo endpoint to retrieve
+additional information about a given user. As with the JWT, this userinfo
+enpoint only provides information that is present in salesforce. If it is
+missing, the key is omitted.
+
+In case you need additional information in the userinfo response, feel free to
+contact Daniel via Slack in our [Support Channel](https://vaillantgroup1874.slack.com/archives/C0386NABKTP).
+
+These information are contained in the response of this endpoint:
+
+```js
+{
+  "salesforceContactId": "6301",
+  "sub": String // Internal USER id
+  "country": "DE",
+  "salesforceLoyaltyId": "9955",
+  "brandName": "vaillant",
+  "email_verified": true,
+  "preferred_username": "user@example.org",
+  "locale": "de",
+  "given_name": "First",
+  "realm_access": {
+    "roles": [
+      "Kompetenzpartner Programm 2019-2020",
+      "HeizungOnline",
+    ]
+  },
+  "name": "First Last",
+  "company": {
+    "website": "example.org",
+    "address": {
+      "country": "DE",
+      "city": "Stadthausen",
+      "street": "Straßenweg 123",
+      "postalCode": "12345"
+    },
+    "contact": {
+      "phone": "+49 123456",
+      "fax": "12345",
+      "email": "user@example.org",
+    },
+    "name": "First-Last GmbH",
+    "customerNumber": "11223"
+  },
+  "salutation": "Herr",
+  "family_name": "First",
+  "email": "user@example.org",
+  "salesforceAccountId": "1234",
+  "salesforceBrandDetailContactId": "3344"
+}
+```
+
