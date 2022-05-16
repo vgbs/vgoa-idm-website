@@ -56,9 +56,11 @@ automatically in each JWT:
   // a few keycloak internals are skipped here
   "realm_access": {
     "roles": [
-      // all roles the user is a member of
+      // all salesforce web roles assigned to the contact (name and id)
       "Kompetenzpartner Programm 2019-2020",
-      "HeizungOnline"
+      "a5p1r0000000DYjAAM",
+      "HeizungOnline",
+      "a5p690000008TvkAAE"
       // ...
     ]
   },
@@ -68,8 +70,9 @@ automatically in each JWT:
   // to the token.
   "salesforceContactId": "6301",
   "country": "DE",
-  "brandName": "vaillant",
+  "brandName": "Vaillant",
   "email_verified": true,
+  // deprecated - please use company.name from openid-connect userinfo endpoint (see below)
   "companyName": "First-Last GmbH",
   "preferred_username": "user@example.org",
   "locale": "de",
@@ -106,26 +109,39 @@ These information are contained in the response of this endpoint:
   "realm_access": {
     "roles": [
       "Kompetenzpartner Programm 2019-2020",
+      "a5p1r0000000DYjAAM",
       "HeizungOnline",
+      "a5p690000008TvkAAE"
     ]
   },
   "name": "First Last",
+  // Company data = Salesforce account
   "company": {
+    // if set the brand specific website, otherwise website from the account
     "website": "example.org",
     "address": {
       "country": "DE",
       "city": "Stadthausen",
-      "street": "Straßenweg 123",
+      "street": "Straßenweg",
+      "houseNumber": "123",
+      "floor": "3",
+      "flatNumber": "1B",
+      "district": "Downtown",
+      "county": "Example county",
       "postalCode": "12345"
     },
     "contact": {
       "phone": "+49 123456",
+      "additionalPhone": "+49 654321",
       "fax": "12345",
+      "mobile": "123123213",
       "email": "user@example.org",
     },
     "name": "First-Last GmbH",
-    "customerNumber": "11223"
+    "customerNumber": "11223",
+    "taxNumber": "1337"
   },
+  "title": "Dr",
   "salutation": "Herr",
   "family_name": "First",
   "email": "user@example.org",
@@ -133,4 +149,3 @@ These information are contained in the response of this endpoint:
   "salesforceBrandDetailContactId": "3344"
 }
 ```
-
