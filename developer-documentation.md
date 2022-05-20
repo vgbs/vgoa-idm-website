@@ -128,7 +128,8 @@ These information are contained in the response of this endpoint:
       "flatNumber": "1B",
       "district": "Downtown",
       "county": "Example county",
-      "postalCode": "12345"
+      "postalCode": "12345",
+      "extension": "B1337"
     },
     "contact": {
       "phone": "+49 123456",
@@ -145,6 +146,16 @@ These information are contained in the response of this endpoint:
   "salutation": "Herr",
   "family_name": "First",
   "email": "user@example.org",
+  "phone": "1234",
+  "homePhone": "03232",
+  "mobile": "321313",
+  "fax": "583585",
+  "street": "Main street",
+  "postalCode": "12345",
+  "city": "Stadthausen",
+  "county": "County1",
+  "countryName": "DE",
+  "extension": "abc",
   "salesforceAccountId": "1234",
   "salesforceBrandDetailContactId": "3344"
 }
