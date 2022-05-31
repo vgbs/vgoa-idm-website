@@ -6,6 +6,7 @@ description: Overview
 ## Contents
 
 * [Developer Documentation](developer-documentation.md)
+* [Login Issues](login-issues.md)
 
 ## Announcements
 
