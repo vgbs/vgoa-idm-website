@@ -17,7 +17,7 @@ If your customer already left the login page after the failed try, please ask hi
 
 ## Check Support ID In Elastic
 
-Elastic is our logging system. Here you can easily search for the support ID and get anonymous information about the login with potential reasons why it could have failed. Log in with your Elastic user and search for the support ID the customer gave you:
+Elastic is our logging system. Here you can easily search for the support ID and get anonymous information about the login with potential reasons why it could have failed. Log in with your Elastic user, choose the "IDM Logs"-Dashboard and search for the support ID the customer gave you:
 
 [Elastic IdM Log](https://logs.idm.vaillant-group.com/)
 

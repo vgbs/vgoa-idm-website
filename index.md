@@ -7,6 +7,7 @@ description: Overview
 
 * [Developer Documentation](developer-documentation.md)
 * [Login Issues](login-issues.md)
+* [User activation status](user-activation-status.md)
 
 ## Announcements
 
