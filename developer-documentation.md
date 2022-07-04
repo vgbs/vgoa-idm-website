@@ -95,6 +95,8 @@ contact Daniel via Slack in our [Support Channel](https://vaillantgroup1874.slac
 
 These information are contained in the response of this endpoint:
 
+### B2B
+
 ```js
 {
   "salesforceContactId": "6301",
@@ -147,7 +149,6 @@ These information are contained in the response of this endpoint:
   "family_name": "First",
   "email": "user@example.org",
   "phone": "1234",
-  "homePhone": "03232",
   "mobile": "321313",
   "fax": "583585",
   "street": "Main street",
@@ -156,6 +157,36 @@ These information are contained in the response of this endpoint:
   "county": "County1",
   "countryName": "DE",
   "extension": "abc",
+  "salesforceAccountId": "1234",
+  "salesforceBrandDetailContactId": "3344"
+}
+```
+
+### B2C
+
+```js
+{
+  "salesforceContactId": "6301",
+  "sub": String // Internal USER id
+  "country": "DE",
+  "brandName": "vaillant",
+  "email_verified": true,
+  "preferred_username": "user@example.org",
+  "locale": "de",
+  "given_name": "First",
+  "name": "First Last",
+  "title": "Dr",
+  "salutation": "Herr",
+  "family_name": "First",
+  "email": "user@example.org",
+  "phone": "1234",
+  "mobile": "321313",
+  "fax": "583585",
+  "street": "Main street",
+  "postalCode": "12345",
+  "city": "Stadthausen",
+  "county": "County1",
+  "countryName": "DE",
   "salesforceAccountId": "1234",
   "salesforceBrandDetailContactId": "3344"
 }
