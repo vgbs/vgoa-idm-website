@@ -7,8 +7,7 @@ description: Overview
 
 * [Developer Documentation](developer-documentation.md)
 * [NSC Documentation](nsc-documentation.md)
-* [Login Issues](login-issues.md)
-* [User activation status](user-activation-status.md)
+* [User History Dashboard](user-history-dashboard.md)
 
 ## Announcements
 
