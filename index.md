@@ -6,6 +6,7 @@ description: Overview
 ## Contents
 
 * [Developer Documentation](developer-documentation.md)
+* [API Documentation](api-documentation.html)
 * [NSC Documentation](nsc-documentation.md)
 * [User History Dashboard](user-history-dashboard.md)
 
