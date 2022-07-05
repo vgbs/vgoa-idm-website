@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
   title: IDM APIs
-  version: '1.1'
-  description: First draft of IDM Apis
+  version: '1.2'
+  description: APIs provided by the Vaillant Group Identity Management
 servers:
   - url: https://identity-qa.vaillant-group.com/api
     description: QA
@@ -124,6 +124,14 @@ components:
     ActivationB2C:
       type: object
       properties:
+        firstname:
+          type: string
+          nullable: true
+          description: Is used in the activation email
+        lastname:
+          type: string
+          nullable: true
+          description: Is used in the activation email
         email:
           type: string
           nullable: false
