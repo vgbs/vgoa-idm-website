@@ -1,0 +1,249 @@
+openapi: 3.0.3
+info:
+  title: IDM APIs
+  version: '1.1'
+  description: First draft of IDM Apis
+servers:
+  - url: https://identity-qa.vaillant-group.com/api
+    description: QA
+  - url: https://identity.vaillant-group.com/api
+    description: Prod
+paths:
+  '/activate/b2c':
+    post:
+      summary: Activates a b2c user
+      tags:
+        - User activation
+      security:
+        - basicAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivationB2C'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivationB2CResponse'
+        '409':
+          description: User is already activated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageResponse'
+        '422':
+          description: Error while validation of request object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/activate/b2b':
+    post:
+      summary: Activates a b2b user
+      tags:
+        - User activation
+      security:
+        - basicAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivationB2B'
+      responses:
+        '202':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivationB2BResponse'
+          links:
+            GetB2bStatus:
+              operationId: getB2bStatus
+              parameters:
+                statusId: '$response.body#/id'
+              description: >
+                The `id` value returned in the response can be used as
+                the `statusId` parameter in `GET /activate/b2b/status/{statusId}`.
+
+        '422':
+          description: Error while validation of request object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/activate/b2b/status/{statusId}':
+    get:
+      operationId: getB2bStatus
+      summary: Gets the status of an b2b activation
+      tags:
+        - User activation
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: statusId
+          description: Id of the b2b activation
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: When status is RUNNING or COMPLETED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivationStatusResponse'
+        '404':
+          description: When no status was found for the provided id
+        '500':
+          description: When the activation terminated exceptionally
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
+  schemas:
+    ActivationB2C:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: false
+        brand:
+          type: string
+          nullable: false
+        country:
+          type: string
+          nullable: false
+        brandDetailContactId:
+          type: string
+          description: Brand detail contact id of contact to be activated
+          nullable: false
+        locale:
+          type: string
+          description: Language of the user e.g. 'fr' or 'nl'
+          nullable: false
+        clientId:
+          type: string
+          description: IDM client id
+          nullable: false
+        redirectUri:
+          type: string
+          description: The URI where the user gets redirect to after successful activation.
+          nullable: false
+
+    ActivationB2B:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: false
+        brand:
+          type: string
+          nullable: false
+        country:
+          type: string
+          nullable: false
+        locale:
+          type: string
+          nullable: false
+        brandDetailContactId:
+          type: string
+          description: Brand detail contact id of contact to be activated
+          nullable: false
+        salutation:
+          type: string
+          nullable: true
+        firstname:
+          type: string
+          nullable: true
+        lastname:
+          type: string
+          nullable: true
+        clientId:
+          type: string
+          description: IDM client id
+          nullable: true
+        redirectUri:
+          type: string
+          description: The URI where the user gets redirect to after successful activation.
+          nullable: true
+
+    ActivationB2CResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: IDM Id of the user
+          nullable: false
+
+    ActivationB2BResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+          description: Id of the activation status
+          nullable: false
+        href:
+          type: string
+          description: link to fetch the status
+          example: /activate/b2b/status/3fa85f64-5717-4562-b3fc-2c963f66afa6
+          nullable: false
+
+    ActivationStatusResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [RUNNING, COMPLETED, ERROR]
+          description: IDM Id of the user
+          nullable: false
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          nullable: false
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 500
+          description: HTTP Status code
+          nullable: false
+        message:
+          type: string
+          nullable: false
+
+    ErrorMessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          nullable: false
+
