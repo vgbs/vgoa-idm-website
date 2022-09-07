@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: IDM APIs
-  version: '1.2'
+  version: '1.3'
   description: APIs provided by the Vaillant Group Identity Management
 servers:
   - url: https://identity-qa.vaillant-group.com/api
@@ -20,14 +20,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ActivationB2C'
+              $ref: '#/components/schemas/B2CActivation'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ActivationB2CResponse'
+                $ref: '#/components/schemas/B2CActivationResponse'
         '409':
           description: User is already activated
           content:
@@ -57,14 +57,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ActivationB2B'
+              $ref: '#/components/schemas/B2BActivation'
       responses:
         '202':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ActivationB2BResponse'
+                $ref: '#/components/schemas/B2BActivationResponse'
           links:
             GetB2bStatus:
               operationId: getB2bStatus
@@ -113,7 +113,43 @@ paths:
           description: When no status was found for the provided id
         '500':
           description: When the activation terminated exceptionally
-
+  '/activate/api-developer':
+    post:
+      summary: Activates a user for the API Developer Portal
+      tags:
+        - User activation
+      security:
+        - basicAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiDeveloperActivation'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiDeveloperActivationResponse'
+        '409':
+          description: User is already activated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageResponse'
+        '422':
+          description: Error while validation of request object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   securitySchemes:
     basicAuth:
@@ -121,7 +157,7 @@ components:
       scheme: basic
 
   schemas:
-    ActivationB2C:
+    B2CActivation:
       type: object
       properties:
         firstname:
@@ -158,7 +194,7 @@ components:
           description: The URI where the user gets redirect to after successful activation.
           nullable: false
 
-    ActivationB2B:
+    B2BActivation:
       type: object
       properties:
         email:
@@ -195,7 +231,34 @@ components:
           description: The URI where the user gets redirect to after successful activation.
           nullable: true
 
-    ActivationB2CResponse:
+    ApiDeveloperActivation:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: false
+        username:
+          type: string
+          nullable: false
+        firstname:
+          type: string
+          nullable: false
+        lastname:
+          type: string
+          nullable: false
+        country:
+          type: string
+          nullable: true
+        clientId:
+          type: string
+          description: IDM client id
+          nullable: false
+        redirectUri:
+          type: string
+          description: The URI where the user gets redirect to after successful activation.
+          nullable: false
+
+    B2CActivationResponse:
       type: object
       properties:
         userId:
@@ -203,7 +266,7 @@ components:
           description: IDM Id of the user
           nullable: false
 
-    ActivationB2BResponse:
+    B2BActivationResponse:
       type: object
       properties:
         id:
@@ -216,6 +279,14 @@ components:
           type: string
           description: link to fetch the status
           example: /activate/b2b/status/3fa85f64-5717-4562-b3fc-2c963f66afa6
+          nullable: false
+
+    ApiDeveloperActivationResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: IDM Id of the user
           nullable: false
 
     ActivationStatusResponse:
