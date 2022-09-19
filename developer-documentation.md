@@ -77,7 +77,7 @@ var keycloak = Keycloak({
     url: 'https://identity-qa.vaillant-group.com/auth',
     realm: 'your-realm',
     clientId: 'your-qa-client-id',
-    pkceMethod: 'S256'
+    "enable-pkce": true
 });
 
 keycloak.init({onLoad: 'login-required', "pkceMethod": "S256"}).success(function (authenticated) {
