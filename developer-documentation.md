@@ -16,13 +16,26 @@ What we need from you to set everything up:
     * Environment (development / QA / production)
 * List of your redirect URIs separated by realm
 * What tech stack are you using
+* Whether you want to use backend or frontend integration (see below)
 
 What you will get from us:
 
 Basically all information that is needed in the oauth configuration of your tech stack. Namely:
 
 * The SSO base URLs
-* Your client credentials
+* Your client-id
+* Your client secret (in case of backend integration)
+
+## Backend vs Frontend integration
+After the user logs in with her credentials, an [auth code](https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow) is returned and must be exchanged for an access token. This can be done by the back- or frontend of your application.
+
+While both approaches are valid, please consider the pros and cons in your particular application and let us know which way you choose. In case of backend integration, you will receive an additional client secret from us.
+
+### Frontend Integration
+When your frontend renders the redirect page (e.g https://your-domain.de/auth/callback) after the user logs in, the auth code is picked up from the url and can then be exchanged via an AJAX call to the IDM Server for an access- and id token. The frontend application is responsible for storing the tokens e.g. in local storage and refresh the access token, whenever it expires.
+
+### Backend Integration
+Your backend application is called after the user logs in. The backend picks up the auth code from the url. It then sends it together with its [client-id and client-secret](https://www.oauth.com/oauth2-servers/client-registration/client-id-secret/), receives an access token and typically creates a server-side session where the access token is stored. It then sends back the sessionId to the frontend. The frontend doesn't have to handle refresh or access tokens.  
 
 ## SSO Adapters
 
@@ -38,6 +51,32 @@ As we are supporting teams to implement, we will add more and more links to
 available documentations:
 
 * Java, Spring Boot: [Official Docs](https://spring.io/guides/tutorials/spring-boot-oauth2/)
+
+### Javascript Adapter
+
+If you're integrating SSO on the frontend side of your Application (i.e. your frontend application will exchange the Auth-Code for an Access Token and handle Token Refresh), you can use the [Keycloak Javascript adapter](https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter).
+Feel free to use the configuration below as a starting point for you configuration:
+
+```javascript
+var keycloak = Keycloak({
+  url: 'https://identity-qa.vaillant-group.com/auth',
+  realm: 'your-realm',
+  clientId: 'your-qa-client-id',
+  pkceMethod: 'S256'
+});
+
+keycloak.init({onLoad: 'login-required',"pkceMethod": "S256"}).success(function (authenticated) {
+  if (!authenticated) {
+    alert('not authenticated');
+  } else {
+    console.log(keycloak.idTokenParsed);
+    document.getElementById('name').innerHTML = keycloak.idTokenParsed.name;
+  }
+}).error(function (e) {
+  console.log(e)
+  alert('failed to initialize');
+});
+```
 
 ## Available Information in the Token and the Userinfo
 
