@@ -26,16 +26,29 @@ Basically all information that is needed in the oauth configuration of your tech
 * Your client-id
 * Your client secret (in case of backend integration)
 
-## Backend vs Frontend integration
-After the user logs in with her credentials, an [auth code](https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow) is returned and must be exchanged for an access token. This can be done by the back- or frontend of your application.
+## Backend vs Frontend Integration
 
-While both approaches are valid, please consider the pros and cons in your particular application and let us know which way you choose. In case of backend integration, you will receive an additional client secret from us.
+After the user logs in with her credentials,
+an [auth code](https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow) is
+returned and must be exchanged for an access token. This can be done by the back- or frontend of your application.
+
+While both approaches are valid, please consider the pros and cons in your particular application and let us know which
+way you choose. In case of backend integration, you will receive an additional client secret from us.
 
 ### Frontend Integration
-When your frontend renders the redirect page (e.g https://your-domain.de/auth/callback) after the user logs in, the auth code is picked up from the url and can then be exchanged via an AJAX call to the IDM Server for an access- and id token. The frontend application is responsible for storing the tokens e.g. in local storage and refresh the access token, whenever it expires.
+
+When your frontend renders the redirect page (e.g https://your-domain.de/auth/callback) after the user logs in, the auth
+code is picked up from the url and can then be exchanged via an AJAX call to the IDM Server for an access- and id token.
+The frontend application is responsible for storing the tokens e.g. in local storage and refresh the access token,
+whenever it expires.
 
 ### Backend Integration
-Your backend application is called after the user logs in. The backend picks up the auth code from the url. It then sends it together with its [client-id and client-secret](https://www.oauth.com/oauth2-servers/client-registration/client-id-secret/), receives an access token and typically creates a server-side session where the access token is stored. It then sends back the sessionId to the frontend. The frontend doesn't have to handle refresh or access tokens.  
+
+Your backend application is called after the user logs in. The backend picks up the auth code from the url. It then
+sends it together with
+its [client-id and client-secret](https://www.oauth.com/oauth2-servers/client-registration/client-id-secret/), receives
+an access token and typically creates a server-side session where the access token is stored. It then sends back the
+sessionId to the frontend. The frontend doesn't have to handle refresh or access tokens.
 
 ## SSO Adapters
 
@@ -54,27 +67,29 @@ available documentations:
 
 ### Javascript Adapter
 
-If you're integrating SSO on the frontend side of your Application (i.e. your frontend application will exchange the Auth-Code for an Access Token and handle Token Refresh), you can use the [Keycloak Javascript adapter](https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter).
+If you're integrating SSO on the frontend side of your Application (i.e. your frontend application will exchange the
+auth code for an access token and handle token refreshs), you can use
+the [Keycloak Javascript adapter](https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter).
 Feel free to use the configuration below as a starting point for you configuration:
 
 ```javascript
 var keycloak = Keycloak({
-  url: 'https://identity-qa.vaillant-group.com/auth',
-  realm: 'your-realm',
-  clientId: 'your-qa-client-id',
-  pkceMethod: 'S256'
+    url: 'https://identity-qa.vaillant-group.com/auth',
+    realm: 'your-realm',
+    clientId: 'your-qa-client-id',
+    pkceMethod: 'S256'
 });
 
-keycloak.init({onLoad: 'login-required',"pkceMethod": "S256"}).success(function (authenticated) {
-  if (!authenticated) {
-    alert('not authenticated');
-  } else {
-    console.log(keycloak.idTokenParsed);
-    document.getElementById('name').innerHTML = keycloak.idTokenParsed.name;
-  }
+keycloak.init({onLoad: 'login-required', "pkceMethod": "S256"}).success(function (authenticated) {
+    if (!authenticated) {
+        alert('not authenticated');
+    } else {
+        console.log(keycloak.idTokenParsed);
+        document.getElementById('name').innerHTML = keycloak.idTokenParsed.name;
+    }
 }).error(function (e) {
-  console.log(e)
-  alert('failed to initialize');
+    console.log(e)
+    alert('failed to initialize');
 });
 ```
 
@@ -86,41 +101,84 @@ automatically in each JWT:
 
 ```js
 {
-  "exp": int, // Expiration of this token (unix timestamp)
-  "iat": int, // Issued at (unix timestamp)
-  "auth_time": int, // time of authentication
-  "jti": UUID, // Unique ID of this token
-  "iss": String, // Issuer (URL of the originating REALM)
-  "sub": String // Internal USER id
-  // a few keycloak internals are skipped here
-  "realm_access": {
-    "roles": [
-      // all salesforce web roles assigned to the contact (name and id)
-      "Kompetenzpartner Programm 2019-2020",
-      "a5p1r0000000DYjAAM",
-      "HeizungOnline",
-      "a5p690000008TvkAAE"
-      // ...
-    ]
-  },
-  // The following information are Vaillant specific
-  // They are added to each token if the corresponding information
-  // can be found in Salesforce. If not, the key will not be added
-  // to the token.
-  "salesforceContactId": "6301",
-  "country": "DE",
-  "brandName": "Vaillant",
-  "email_verified": true,
-  // deprecated - please use company.name from openid-connect userinfo endpoint (see below)
-  "companyName": "First-Last GmbH",
-  "preferred_username": "user@example.org",
-  "locale": "de",
-  "given_name": "First",
-  "name": "First Last",
-  "family_name": "Last",
-  "email": "user@example.org",
-  "salesforceAccountId": "1234",
-  "salesforceBrandDetailContactId": "7981"
+    "exp"
+:
+    int, // Expiration of this token (unix timestamp)
+        "iat"
+:
+    int, // Issued at (unix timestamp)
+        "auth_time"
+:
+    int, // time of authentication
+        "jti"
+:
+    UUID, // Unique ID of this token
+        "iss"
+:
+    String, // Issuer (URL of the originating REALM)
+        "sub"
+:
+    String // Internal USER id
+    // a few keycloak internals are skipped here
+    "realm_access"
+:
+    {
+        "roles"
+    :
+        [
+            // all salesforce web roles assigned to the contact (name and id)
+            "Kompetenzpartner Programm 2019-2020",
+            "a5p1r0000000DYjAAM",
+            "HeizungOnline",
+            "a5p690000008TvkAAE"
+            // ...
+        ]
+    }
+,
+    // The following information are Vaillant specific
+    // They are added to each token if the corresponding information
+    // can be found in Salesforce. If not, the key will not be added
+    // to the token.
+    "salesforceContactId"
+:
+    "6301",
+        "country"
+:
+    "DE",
+        "brandName"
+:
+    "Vaillant",
+        "email_verified"
+:
+    true,
+        // deprecated - please use company.name from openid-connect userinfo endpoint (see below)
+        "companyName"
+:
+    "First-Last GmbH",
+        "preferred_username"
+:
+    "user@example.org",
+        "locale"
+:
+    "de",
+        "given_name"
+:
+    "First",
+        "name"
+:
+    "First Last",
+        "family_name"
+:
+    "Last",
+        "email"
+:
+    "user@example.org",
+        "salesforceAccountId"
+:
+    "1234",
+        "salesforceBrandDetailContactId"
+:
+    "7981"
 }
 ```
 
@@ -138,66 +196,168 @@ These information are contained in the response of this endpoint:
 
 ```js
 {
-  "salesforceContactId": "6301",
-  "sub": String // Internal USER id
-  "country": "DE",
-  "salesforceLoyaltyId": "9955",
-  "brandName": "vaillant",
-  "email_verified": true,
-  "preferred_username": "user@example.org",
-  "locale": "de",
-  "given_name": "First",
-  "realm_access": {
-    "roles": [
-      "Kompetenzpartner Programm 2019-2020",
-      "a5p1r0000000DYjAAM",
-      "HeizungOnline",
-      "a5p690000008TvkAAE"
-    ]
-  },
-  "name": "First Last",
-  // Company data = Salesforce account
-  "company": {
-    // if set the brand specific website, otherwise website from the account
-    "website": "example.org",
-    "address": {
-      "country": "DE",
-      "city": "Stadthausen",
-      "street": "Straßenweg",
-      "houseNumber": "123",
-      "floor": "3",
-      "flatNumber": "1B",
-      "district": "Downtown",
-      "county": "Example county",
-      "postalCode": "12345",
-      "extension": "B1337"
-    },
-    "contact": {
-      "phone": "+49 123456",
-      "additionalPhone": "+49 654321",
-      "fax": "12345",
-      "mobile": "123123213",
-      "email": "user@example.org",
-    },
-    "name": "First-Last GmbH",
-    "customerNumber": "11223",
-    "taxNumber": "1337"
-  },
-  "title": "Dr",
-  "salutation": "Herr",
-  "family_name": "First",
-  "email": "user@example.org",
-  "phone": "1234",
-  "mobile": "321313",
-  "fax": "583585",
-  "street": "Main street",
-  "postalCode": "12345",
-  "city": "Stadthausen",
-  "county": "County1",
-  "countryName": "DE",
-  "extension": "abc",
-  "salesforceAccountId": "1234",
-  "salesforceBrandDetailContactId": "3344"
+    "salesforceContactId"
+:
+    "6301",
+        "sub"
+:
+    String // Internal USER id
+    "country"
+:
+    "DE",
+        "salesforceLoyaltyId"
+:
+    "9955",
+        "brandName"
+:
+    "vaillant",
+        "email_verified"
+:
+    true,
+        "preferred_username"
+:
+    "user@example.org",
+        "locale"
+:
+    "de",
+        "given_name"
+:
+    "First",
+        "realm_access"
+:
+    {
+        "roles"
+    :
+        [
+            "Kompetenzpartner Programm 2019-2020",
+            "a5p1r0000000DYjAAM",
+            "HeizungOnline",
+            "a5p690000008TvkAAE"
+        ]
+    }
+,
+    "name"
+:
+    "First Last",
+        // Company data = Salesforce account
+        "company"
+:
+    {
+        // if set the brand specific website, otherwise website from the account
+        "website"
+    :
+        "example.org",
+            "address"
+    :
+        {
+            "country"
+        :
+            "DE",
+                "city"
+        :
+            "Stadthausen",
+                "street"
+        :
+            "Straßenweg",
+                "houseNumber"
+        :
+            "123",
+                "floor"
+        :
+            "3",
+                "flatNumber"
+        :
+            "1B",
+                "district"
+        :
+            "Downtown",
+                "county"
+        :
+            "Example county",
+                "postalCode"
+        :
+            "12345",
+                "extension"
+        :
+            "B1337"
+        }
+    ,
+        "contact"
+    :
+        {
+            "phone"
+        :
+            "+49 123456",
+                "additionalPhone"
+        :
+            "+49 654321",
+                "fax"
+        :
+            "12345",
+                "mobile"
+        :
+            "123123213",
+                "email"
+        :
+            "user@example.org",
+        }
+    ,
+        "name"
+    :
+        "First-Last GmbH",
+            "customerNumber"
+    :
+        "11223",
+            "taxNumber"
+    :
+        "1337"
+    }
+,
+    "title"
+:
+    "Dr",
+        "salutation"
+:
+    "Herr",
+        "family_name"
+:
+    "First",
+        "email"
+:
+    "user@example.org",
+        "phone"
+:
+    "1234",
+        "mobile"
+:
+    "321313",
+        "fax"
+:
+    "583585",
+        "street"
+:
+    "Main street",
+        "postalCode"
+:
+    "12345",
+        "city"
+:
+    "Stadthausen",
+        "county"
+:
+    "County1",
+        "countryName"
+:
+    "DE",
+        "extension"
+:
+    "abc",
+        "salesforceAccountId"
+:
+    "1234",
+        "salesforceBrandDetailContactId"
+:
+    "3344"
 }
 ```
 
@@ -205,28 +365,74 @@ These information are contained in the response of this endpoint:
 
 ```js
 {
-  "salesforceContactId": "6301",
-  "sub": String // Internal USER id
-  "country": "DE",
-  "brandName": "vaillant",
-  "email_verified": true,
-  "preferred_username": "user@example.org",
-  "locale": "de",
-  "given_name": "First",
-  "name": "First Last",
-  "title": "Dr",
-  "salutation": "Herr",
-  "family_name": "First",
-  "email": "user@example.org",
-  "phone": "1234",
-  "mobile": "321313",
-  "fax": "583585",
-  "street": "Main street",
-  "postalCode": "12345",
-  "city": "Stadthausen",
-  "county": "County1",
-  "countryName": "DE",
-  "salesforceAccountId": "1234",
-  "salesforceBrandDetailContactId": "3344"
+    "salesforceContactId"
+:
+    "6301",
+        "sub"
+:
+    String // Internal USER id
+    "country"
+:
+    "DE",
+        "brandName"
+:
+    "vaillant",
+        "email_verified"
+:
+    true,
+        "preferred_username"
+:
+    "user@example.org",
+        "locale"
+:
+    "de",
+        "given_name"
+:
+    "First",
+        "name"
+:
+    "First Last",
+        "title"
+:
+    "Dr",
+        "salutation"
+:
+    "Herr",
+        "family_name"
+:
+    "First",
+        "email"
+:
+    "user@example.org",
+        "phone"
+:
+    "1234",
+        "mobile"
+:
+    "321313",
+        "fax"
+:
+    "583585",
+        "street"
+:
+    "Main street",
+        "postalCode"
+:
+    "12345",
+        "city"
+:
+    "Stadthausen",
+        "county"
+:
+    "County1",
+        "countryName"
+:
+    "DE",
+        "salesforceAccountId"
+:
+    "1234",
+        "salesforceBrandDetailContactId"
+:
+    "3344"
 }
 ```
