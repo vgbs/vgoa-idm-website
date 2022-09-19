@@ -6,7 +6,7 @@ description: Common IDM Flows
 [&larr; back to Overview](/)
 
 
-## Logout
+## Login
 The login url should be assembled by your Adapter. Please consult the [official docs](https://www.keycloak.org/docs/latest/securing_apps/#_oidc) to find your best fit.
 
 ## Logout
