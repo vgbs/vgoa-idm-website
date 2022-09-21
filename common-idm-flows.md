@@ -42,11 +42,14 @@ the user isn't logged in, when visiting the delete-account url, the login screen
 the delete action with her password.
 
 ```
-https://identity-qa.vaillant-group.com/auth/realms/vaillant-germany-b2c/user-account/delete?client_id=playground-b2c&redirect_uri=www.example.org
+https://identity-qa.vaillant-group.com/auth/realms/vaillant-germany-b2c/user-account/delete?client_id=<CLIENT_ID>&redirect_uri=<REDIRECT_URI>
 ```
 
-## User Registration (Activation)
+If your service is interested in the event of user account deletion, you can register
+a [webhook](developer-documentation.md#webhooks), which will be notified everytime a user is deleted.
+Please let us know, if you want to use this feature and we will set it up for you.
 
+## User Registration (Activation)
 Self-service registration is not yet supported by the IDM. To this date, all services depend
 on [specific user data in salesforce](nsc-documentation.md#user-activation). A self-registered user without the
 necessary salesforce data would hence be useless.

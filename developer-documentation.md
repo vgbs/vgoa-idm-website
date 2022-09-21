@@ -228,7 +228,7 @@ These information are contained in the response of this endpoint:
 ```json
 {
   "salesforceContactId": "6301",
-  "sub": String
+  "sub": String,
   // Internal USER id
   "country": "DE",
   "brandName": "vaillant",
@@ -251,5 +251,22 @@ These information are contained in the response of this endpoint:
   "countryName": "DE",
   "salesforceAccountId": "1234",
   "salesforceBrandDetailContactId": "3344"
+}
+```
+
+## Webhooks
+
+Webhooks are used to notify consuming services of certain events. Currently, we notify our consumers, whenever a user account is deleted.
+In order to become a consumer, please let us know the WEBHOOK_URL we should call, so we can set it up for you.
+If you are looking for other events, such as email address updates or logins, please let us know.
+
+The webhook url will receive POST requests of the format below:
+```http request
+POST <WEBHOOK_URL>
+Content-Type: application/json
+{
+  "action": "user_delete",
+  "userId": "user-id",
+  "deletedAt": "2020-12-31T10:15:30Z"
 }
 ```
