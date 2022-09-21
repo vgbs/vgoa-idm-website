@@ -35,7 +35,7 @@ https://identity-qa.vaillant-group.com/auth/realms/vaillant-germany-b2c/user-acc
 ```
 
 ## User Registration (Activation)
-Self-service registration is not yet supported by the IDM. To this date, all services depend on specific user data in salesforce.
+Self-service registration is not yet supported by the IDM. To this date, all services depend on [specific user data in salesforce](nsc-documentation.md#user-activation).
 However, there are API endpoints you can call to activate a user that already has the necessary data inside of salesforce.
 
 Consult the [API Documentation](api-documentation.html) page to see the available endpoints.
