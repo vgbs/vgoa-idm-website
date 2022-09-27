@@ -32,7 +32,18 @@ Use the URL below to let the user update her password. The user has to be logged
 the user isn't logged in, when visiting the change-password url, the login screen shows up first.
 
 ```
-https://keycloak.qa.dsp.vaillant-group.cloud/auth/realms/<REALM_ID>/password/change?client_id=<CLIENT_ID>&redirect_uri=<REDIRECT_URI>
+https://identity-qa.vaillant-group.com/auth/realms/<REALM_ID>/password/change?client_id=<CLIENT_ID>&redirect_uri=<REDIRECT_URI>
+```
+
+## Change Email
+
+Use the URL below to let the user update her email. The user has to be logged in, in order to change her email. If
+the user isn't logged in, when visiting the change-email url, the login screen shows up first.
+
+Since changing the email is a sensitive operation, which might easily be abused, the operation has to be confirmed witht he user's password.
+
+```
+https://identity-qa.vaillant-group.com/auth/realms/<REALM_ID>/email/change?client_id=<CLIENT_ID>&redirect_uri=<REDIRECT_URI>
 ```
 
 ## Delete Account (B2C only)
