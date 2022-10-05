@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: IDM APIs
-  version: '1.4'
+  version: '2.0'
   description: APIs provided by the Vaillant Group Identity Management
 servers:
   - url: https://identity-qa.vaillant-group.com/api
@@ -12,8 +12,10 @@ paths:
   '/activate/b2c':
     post:
       summary: Activates a b2c user
+      deprecated: true
+      description: Please use /b2c/countries/{country}/brands/{brand}/users instead. Will be removed after 2022-12-31
       tags:
-        - User activation
+        - B2C
       security:
         - basicAuth: []
       requestBody:
@@ -27,7 +29,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/B2CActivationResponse'
+                $ref: '#/components/schemas/B2CUserRegistrationResponse'
         '409':
           description: User is already activated
           content:
@@ -46,21 +48,69 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  '/activate/b2c/brand/{brand}/country/{country}/email/{email}':
-    get:
-      summary: Gets the activation status of an b2c user
+  '/b2c/countries/{country}/brands/{brand}/users':
+    post:
+      summary: Registers a b2c user
       tags:
-        - User activation
-      security:
-        - basicAuth: []
+        - B2C
       parameters:
+        - in: path
+          name: country
+          required: true
+          schema:
+            type: string
         - in: path
           name: brand
           required: true
           schema:
             type: string
+      security:
+        - basicAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/B2CUserRegistrationRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/B2CUserRegistrationResponse'
+        '409':
+          description: User is already activated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageResponse'
+        '422':
+          description: Error while validation of request object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/b2c/countries/{country}/brands/{brand}/users/{email}':
+    get:
+      summary: Gets a b2c user
+      tags:
+        - B2C
+      security:
+        - basicAuth: []
+      parameters:
         - in: path
           name: country
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: brand
           required: true
           schema:
             type: string
@@ -75,16 +125,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/B2CUserActivationStatusResponse'
+                $ref: '#/components/schemas/B2CUserResponse'
         '404':
           description: When the user does not exists for the provided brand/country
         '500':
           description: When an internal error occurs
+
   '/activate/b2b':
     post:
       summary: Activates a b2b user
+      description: Please use /b2b/countries/{country}/brands/{brand}/user-registrations instead. Will be removed after 2022-12-31
+      deprecated: true
       tags:
-        - User activation
+        - B2B
       security:
         - basicAuth: []
       requestBody:
@@ -98,7 +151,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/B2BActivationResponse'
+                $ref: '#/components/schemas/B2BUserRegistrationResponse'
           links:
             GetB2bStatus:
               operationId: getB2bStatus
@@ -120,18 +173,74 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+
+  '/b2b/countries/{country}/brands/{brand}/user-registrations':
+    post:
+      summary: Registers a b2b user
+      description: The registration of a b2b user can take several seconds, up to minutes. This endpoint will only accept the registration request and process it asynchronously. Use the returned registration resource link to query registration status.
+      tags:
+        - B2B
+      parameters:
+        - in: path
+          name: country
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: brand
+          required: true
+          schema:
+            type: string
+      security:
+        - basicAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/B2BActivation'
+      responses:
+        '202':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/B2BUserRegistrationResponse'
+          links:
+            GetB2bStatus:
+              operationId: getB2BRegistrationStatus
+              parameters:
+                statusId: '$response.body#/id'
+              description: >
+                The `id` value returned in the response can be used as
+                the `registrationId` parameter in `GET /b2b/countries/{country}/brands/{brand}/user-registrations/{registrationId}`.
+
+        '422':
+          description: Error while validation of request object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   '/activate/b2b/status/{statusId}':
     get:
       operationId: getB2bStatus
-      summary: Gets the status of an b2b activation
+      summary: Gets the status of a b2b activation
+      description: Please use /b2b/countries/{country}/brands/{brand}/user-registrations/{registrationId} instead. Will be removed after 2022-12-31
+      deprecated: true
       tags:
-        - User activation
+        - B2B
       security:
         - basicAuth: []
       parameters:
         - in: path
           name: statusId
-          description: Id of the b2b activation
+          description: Id of the b2b user activation
           required: true
           schema:
             type: string
@@ -142,30 +251,69 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/B2BActivationStatusResponse'
+                $ref: '#/components/schemas/B2BRegistrationStatusResponse'
         '404':
           description: When no status was found for the provided id
         '500':
           description: When the activation terminated exceptionally
-  '/activate/api-developer':
-    post:
-      summary: Activates a user for the API Developer Portal
+
+  '/b2b/countries/{country}/brands/{brand}/user-registrations/{registrationId}':
+    get:
+      operationId: getB2BRegistrationStatus
+      summary: Gets the status of a b2b registration
       tags:
-        - User activation
+        - B2B
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: country
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: brand
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: registrationId
+          description: Id of the b2b user registration
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: When status is RUNNING or COMPLETED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/B2BRegistrationStatusResponse'
+        '404':
+          description: When no status was found for the provided id
+        '500':
+          description: When the activation terminated exceptionally
+
+  '/api-developer/users':
+    post:
+      summary: Registers a user for the API Developer Portal
+      tags:
+        - API-Developer
       security:
         - basicAuth: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ApiDeveloperActivation'
+              $ref: '#/components/schemas/ApiDeveloperUserRegistrationRequest'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiDeveloperActivationResponse'
+                $ref: '#/components/schemas/ApiDeveloperUserRegistrationResponse'
         '409':
           description: User is already activated
           content:
@@ -184,6 +332,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+
 components:
   securitySchemes:
     basicAuth:
@@ -193,6 +342,8 @@ components:
   schemas:
     B2CActivation:
       type: object
+      deprecated: true
+      description: Will be removed after 2022-12-31
       properties:
         firstname:
           type: string
@@ -228,8 +379,41 @@ components:
           description: The URI where the user gets redirect to after successful activation.
           nullable: false
 
+    B2CUserRegistrationRequest:
+      type: object
+      properties:
+        firstname:
+          type: string
+          nullable: true
+          description: Is used in the activation email
+        lastname:
+          type: string
+          nullable: true
+          description: Is used in the activation email
+        email:
+          type: string
+          nullable: false
+        brandDetailContactId:
+          type: string
+          description: Brand detail contact id of contact to be activated
+          nullable: false
+        locale:
+          type: string
+          description: Language of the user e.g. 'fr' or 'nl'
+          nullable: false
+        clientId:
+          type: string
+          description: IDM client id
+          nullable: false
+        redirectUri:
+          type: string
+          description: The URI where the user gets redirect to after successful activation.
+          nullable: false
+
     B2BActivation:
       type: object
+      deprecated: true
+      description: Will be removed after 2022-12-31
       properties:
         email:
           type: string
@@ -265,7 +449,38 @@ components:
           description: The URI where the user gets redirect to after successful activation.
           nullable: true
 
-    ApiDeveloperActivation:
+    B2BUserRegistrationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: false
+        locale:
+          type: string
+          nullable: false
+        brandDetailContactId:
+          type: string
+          description: Brand detail contact id of contact to be activated
+          nullable: false
+        salutation:
+          type: string
+          nullable: true
+        firstname:
+          type: string
+          nullable: true
+        lastname:
+          type: string
+          nullable: true
+        clientId:
+          type: string
+          description: IDM client id
+          nullable: true
+        redirectUri:
+          type: string
+          description: The URI where the user gets redirect to after successful activation.
+          nullable: true
+
+    ApiDeveloperUserRegistrationRequest:
       type: object
       properties:
         email:
@@ -292,7 +507,7 @@ components:
           description: The URI where the user gets redirect to after successful activation.
           nullable: false
 
-    B2CActivationResponse:
+    B2CUserRegistrationResponse:
       type: object
       properties:
         userId:
@@ -300,7 +515,7 @@ components:
           description: IDM Id of the user
           nullable: false
 
-    B2CUserActivationStatusResponse:
+    B2CUserResponse:
       type: object
       properties:
         userId:
@@ -315,8 +530,9 @@ components:
           nullable: false
         activated:
           type: boolean
+          description: Indicates whether the user completed the activation process
 
-    B2BActivationResponse:
+    B2BUserRegistrationResponse:
       type: object
       properties:
         id:
@@ -331,7 +547,7 @@ components:
           example: /activate/b2b/status/3fa85f64-5717-4562-b3fc-2c963f66afa6
           nullable: false
 
-    ApiDeveloperActivationResponse:
+    ApiDeveloperUserRegistrationResponse:
       type: object
       properties:
         userId:
@@ -339,7 +555,7 @@ components:
           description: IDM Id of the user
           nullable: false
 
-    B2BActivationStatusResponse:
+    B2BRegistrationStatusResponse:
       type: object
       properties:
         status:
