@@ -101,22 +101,17 @@ automatically in each JWT:
 
 ```json
 {
-  "exp": int,
-  // Expiration of this token (unix timestamp)
-  "iat": int,
-  // Issued at (unix timestamp)
-  "auth_time": int,
-  // time of authentication
-  "jti": UUID,
-  // Unique ID of this token
-  "iss": String,
-  // Issuer (URL of the originating REALM)
-  "sub": String
-  // Internal USER id
+  "exp": int, // Expiration of this token (unix timestamp)
+  "iat": int, // Issued at (unix timestamp)
+  "auth_time": int, // time of authentication
+  "jti": UUID, // Unique ID of this token
+  "iss": String, // Issuer (URL of the originating REALM)
+  "sub": String, // Internal USER id
+  
   // a few keycloak internals are skipped here
+  
   "realm_access": {
-    "roles": [
-      // all salesforce web roles assigned to the contact (name and id)
+    "roles": [ // all salesforce web roles assigned to the contact (name and id)
       "Kompetenzpartner Programm 2019-2020",
       "a5p1r0000000DYjAAM",
       "HeizungOnline",
@@ -132,8 +127,7 @@ automatically in each JWT:
   "country": "DE",
   "brandName": "Vaillant",
   "email_verified": true,
-  // deprecated - please use company.name from openid-connect userinfo endpoint (see below)
-  "companyName": "First-Last GmbH",
+  "companyName": "First-Last GmbH", // deprecated - please use company.name from openid-connect userinfo endpoint (see below)
   "preferred_username": "user@example.org",
   "locale": "de",
   "given_name": "First",
@@ -160,8 +154,7 @@ These information are contained in the response of this endpoint:
 ```json
 {
   "salesforceContactId": "6301",
-  "sub": String,
-  // Internal USER id
+  "sub": String, // Internal USER id
   "country": "DE",
   "salesforceLoyaltyId": "9955",
   "brandName": "vaillant",
@@ -177,11 +170,11 @@ These information are contained in the response of this endpoint:
       "a5p690000008TvkAAE"
     ]
   },
-  "name": "First Last",
+  "name": "First Last", 
+  
   // Company data = Salesforce account
   "company": {
-    // if set the brand specific website, otherwise website from the account
-    "website": "example.org",
+    "website": "example.org",  // if set the brand specific website, otherwise website from the account
     "address": {
       "country": "DE",
       "city": "Stadthausen",
@@ -228,8 +221,7 @@ These information are contained in the response of this endpoint:
 ```json
 {
   "salesforceContactId": "6301",
-  "sub": String,
-  // Internal USER id
+  "sub": String, // Internal USER id
   "country": "DE",
   "brandName": "vaillant",
   "email_verified": true,
