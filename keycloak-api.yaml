@@ -96,9 +96,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+
   '/b2c/countries/{country}/brands/{brand}/users/{email}':
     get:
       summary: Gets a b2c user
+      deprecated: true
+      description: Please use /b2c/countries/{country}/brands/{brand}/users/?q={email} instead. Will be removed after 2022-12-31
       tags:
         - B2C
       security:
@@ -117,6 +120,42 @@ paths:
         - in: path
           name: email
           required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: When a user is found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/B2CUserResponse'
+        '404':
+          description: When the user does not exists for the provided brand/country
+        '500':
+          description: When an internal error occurs
+          
+  '/b2c/countries/{country}/brands/{brand}/users/':
+    get:
+      summary: Gets a b2c user
+      tags:
+        - B2C
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: country
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: brand
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: q
+          required: true
+          description: Currently only searching by email is supported
           schema:
             type: string
       responses:
