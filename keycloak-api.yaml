@@ -167,8 +167,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/B2CUserResponse'
                 nullable: false
-        '404':
-          description: When the user does not exists for the provided brand/country
         '500':
           description: When an internal error occurs
 
