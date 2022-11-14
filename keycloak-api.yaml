@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: IDM APIs
-  version: '2.0'
+  version: '2.1'
   description: APIs provided by the Vaillant Group Identity Management
 servers:
   - url: https://identity-qa.vaillant-group.com/api
@@ -133,7 +133,7 @@ paths:
           description: When the user does not exists for the provided brand/country
         '500':
           description: When an internal error occurs
-          
+
   '/b2c/countries/{country}/brands/{brand}/users/':
     get:
       summary: Gets a b2c user
@@ -153,18 +153,20 @@ paths:
           schema:
             type: string
         - in: query
-          name: q
+          name: email
           required: true
-          description: Currently only searching by email is supported
           schema:
             type: string
       responses:
         '200':
-          description: When a user is found
+          description: All users matching all criteria. For lookup by email, there can be at most a single user in the result set
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/B2CUserResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/B2CUserResponse'
+                nullable: false
         '404':
           description: When the user does not exists for the provided brand/country
         '500':
@@ -553,6 +555,7 @@ components:
           type: string
           description: IDM Id of the user
           nullable: false
+
 
     B2CUserResponse:
       type: object
