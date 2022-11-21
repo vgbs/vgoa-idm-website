@@ -63,7 +63,7 @@ paths:
           name: brand
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/Brand'
       security:
         - basicAuth: []
       requestBody:
@@ -116,7 +116,7 @@ paths:
           name: brand
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/Brand'
         - in: path
           name: email
           required: true
@@ -151,7 +151,7 @@ paths:
           name: brand
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/Brand'
         - in: query
           name: email
           required: true
@@ -229,7 +229,7 @@ paths:
           name: brand
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/Brand'
       security:
         - basicAuth: []
       requestBody:
@@ -314,7 +314,7 @@ paths:
           name: brand
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/Brand'
         - in: path
           name: registrationId
           description: Id of the b2b user registration
@@ -373,12 +373,26 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 
 components:
+
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
 
   schemas:
+
+    Brand:
+      type: string
+      enum:
+        - SaunierDuval
+        - Vaillant
+        - Bulex
+        - Glow-worm
+        - AWB
+        - Protherm
+        - HermannSaunierDuval
+        - DemirDokum
+
     B2CActivation:
       type: object
       deprecated: true
