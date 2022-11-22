@@ -391,7 +391,7 @@ components:
         - AWB
         - Protherm
         - HermannSaunierDuval
-        - DemirDokum
+        - DemirDoekuem
 
     B2CActivation:
       type: object
