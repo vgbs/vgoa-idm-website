@@ -21,7 +21,7 @@ Elastic is our logging system. Here you can easily search for the support ID and
 
 [Elastic IdM Log](https://logs.idm.vaillant-group.com/)
 
-![Search for support ID in Elastic.](/elastic-support.png "Support")
+![Search for support ID in Elastic.](/idm/elastic-support.png.png "Support")
 
 You find possible reasons for the failed login in the message column of the log entry.
 

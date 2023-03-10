@@ -1,16 +1,9 @@
 ---
-title: Identity Management Help
-description: Overview
+title: Vaillant Platform Documentation
+description: Documentation resources for Digital Platform Solutions (DSP) of the Vaillant Group
 ---
 
 ## Contents
 
-* [Getting Started](developer-documentation.md)
-* [Common IDM Flows](common-idm-flows.md)
-* [API Documentation](api-documentation.html)
-* [NSC Documentation](nsc-documentation.md)
-* [User History Dashboard](user-history-dashboard.md)
-
-## Announcements
-
-* [2022-05-03: Changes in logout needed](announcement-20220503.md)
+* [Identity Management](idm/index-idm.html)
+* [File Upload](fileupload/fileupload-api.html)
