@@ -1,0 +1,58 @@
+openapi: 3.0.1
+info:
+  title: File upload
+  description: "[WORK IN PROGRESS] Provides functionality to store one or multiple\
+    \ files. A malware check will be performed before storing files. Infection details\
+    \ are returned, if malware is detected."
+  version: "0.1"
+servers:
+  - url: https://dsp-fileupload.azurewebsites.net/
+    description: Azure Function App
+    variables: {}
+security:
+  - API key: []
+tags:
+  - name: File upload
+paths:
+  /api/analyse-file:
+    post:
+      tags:
+        - File upload
+      summary: Scan the uploaded files for malware
+      operationId: analyseFile
+      parameters:
+        - name: code
+          in: path
+          description: API key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Files to be checked
+        content:
+          multipart/form-data: {}
+        required: true
+      responses:
+        "200":
+          description: File(s) OK
+        "400":
+          description: Empty body or file size limit exceeded
+        "422":
+          description: Malware scan found infected files
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfectionSummary'
+components:
+  schemas:
+    InfectionSummary:
+      type: object
+      properties:
+        filename:
+          type: string
+        infections:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
