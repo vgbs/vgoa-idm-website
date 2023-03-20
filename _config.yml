@@ -1,8 +1,2 @@
-title: Vaillant IDM Help
-defaults:
-  -
-    scope:
-      path: ''
-    values:
-      layout: 'redirect'
-new_domain: 'https://documentation.dsp.vaillant-group.com/idm/'
+πtitle: Vaillant IDM Help
+
